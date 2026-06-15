@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Local SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Optional: uncomment these if you do not want to upload raw dataset files
+# data/raw/
+# data/processed/
