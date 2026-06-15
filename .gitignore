@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Data files
+data/raw/*
+data/processed/*
+
+# Keep empty data folders in Git
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Local SQLite databases
+*.db
+*.sqlite
+*.sqlite3
