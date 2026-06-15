@@ -1,6 +1,6 @@
 # Brazilian E-Commerce Business Performance Analysis
 
-This project analyzes business performance in the Brazilian e-commerce market using the **Olist Brazilian E-Commerce Public Dataset** from Kaggle.
+This project analyzes business performance in the Brazilian e-commerce market using the **Olist Brazilian E-Commerce Public Dataset** from **Kaggle**.
 
 This was my second main data analysis project, and it was a clear step up from my first single-table EDA project. Instead of working with one simple table, this project forced me to work with multiple related tables, different row grains, joins, delivery dates, customer reviews, sellers, products, and enough complexity to think more like an analyst instead of just writing code.
 
@@ -21,7 +21,7 @@ This project focuses on the following questions:
 
 ## Dataset
 
-This project uses the **Olist Brazilian E-Commerce Public Dataset** from **Kaggle**.
+This project uses the **Olist Brazilian E-Commerce Public Dataset** from Kaggle.
 
 The dataset includes multiple CSV files covering:
 
@@ -35,11 +35,13 @@ The dataset includes multiple CSV files covering:
 - Geolocation data
 - Product category translations
 
+The full dataset covers orders from **September 2016 to October 2018**. However, the earliest and latest months contain very few orders, so time-series visualizations focus mainly on the more reliable period from **January 2017 to August 2018**.
+
 Because the dataset contains multiple tables with different row grains, the first step of the project focused on understanding table structure, keys, duplicates, missing values, and relationships before performing business analysis.
 
 ## Tools Used
 
-- Python
+- Python 3.10+
 - Pandas
 - SQLite
 - SQL
@@ -70,6 +72,96 @@ Because the dataset contains multiple tables with different row grains, the firs
     └── business_analysis_queries.sql
 ```
 
+## Setup and Environment
+
+Install the required Python packages with:
+
+```bash
+pip install -r requirements.txt
+```
+
+The project was built with **Python 3.10+**. It may work on nearby Python versions, but Python 3.10 or newer is recommended.
+
+The raw dataset files are not included in this repository. Download the Olist dataset from Kaggle and place the CSV files inside:
+
+```text
+data/raw/
+```
+
+Then run the schema exploration notebook to create the SQLite database:
+
+```text
+data/processed/olist.db
+```
+
+## Data and GitHub Size Notes
+
+The raw CSV files and generated SQLite database are intentionally excluded from Git tracking.
+
+After running the first notebook, the generated SQLite database may exceed **100 MB**, which is above GitHub's normal file-size limit. For that reason, `data/raw/` and `data/processed/` are ignored through `.gitignore`, while empty `.gitkeep` files preserve the folder structure.
+
+Anyone running the project should download the raw dataset from Kaggle and recreate the database locally by running `01_schema_exploration.ipynb`.
+
+## Notebook Runtime Notes
+
+Runtime depends on the machine, but the notebooks are not expected to take very long.
+
+Approximate expectation:
+
+- `01_schema_exploration.ipynb`: builds the SQLite database and may take a few minutes.
+- `02_sql_business_analysis.ipynb`: runs the main SQL analysis and may take around 1-3 minutes.
+- `03_visualizations_and_insights.ipynb`: generates visualizations and usually runs faster once the database exists.
+
+## Analytical Definitions
+
+### Late Delivery
+
+A delivered order was classified as **late** when:
+
+```text
+order_delivered_customer_date > order_estimated_delivery_date
+```
+
+Orders delivered on or before the estimated delivery date were classified as **Early / On Time**.
+
+### Delivered Orders
+
+Most delivery and satisfaction analyses focus on orders where:
+
+```text
+order_status = 'delivered'
+```
+
+and where the delivery date fields needed for the analysis were not null.
+
+Cancelled, unavailable, and other non-delivered order statuses were included in the order-status overview, but they were excluded from delivery-time and late-delivery analyses because they do not represent completed deliveries.
+
+### Row Grain
+
+A major part of this project was tracking row grain carefully:
+
+- `orders` is order-level.
+- `order_items` is item-level.
+- `reviews` is review-level.
+- Joining `orders` to `order_items` changes the result to item-level.
+- Joining `orders`, `order_items`, and `reviews` creates item-review-level outputs.
+
+Metric names such as `total_orders`, `total_items`, and `total_item_reviews` were chosen carefully to avoid overstating what each query measures.
+
+## SQL Query File
+
+The `sql/business_analysis_queries.sql` file is a standalone reference copy of the main SQL queries used in `02_sql_business_analysis.ipynb`.
+
+It is useful for reviewing the SQL without opening the notebook. It can also be run against the generated SQLite database using a SQLite client such as DB Browser for SQLite or the `sqlite3` command-line tool.
+
+Example:
+
+```bash
+sqlite3 data/processed/olist.db < sql/business_analysis_queries.sql
+```
+
+The notebook version remains the main analysis file because it includes the SQL outputs and written observations.
+
 ## Notebook Breakdown
 
 ### 01_schema_exploration.ipynb
@@ -84,6 +176,7 @@ It includes:
 - Checking duplicate rows and duplicate keys
 - Identifying primary keys and composite keys
 - Understanding the grain of each table
+- Inspecting date columns
 - Converting the raw CSV files into a SQLite database
 
 This step was important because the dataset contains multiple related tables, and joining them without understanding their structure could easily lead to misleading results.
@@ -178,9 +271,10 @@ This was one of the main lessons of the project: business performance should not
 
 1. Download the Olist Brazilian E-Commerce dataset from Kaggle.
 2. Place the raw CSV files inside the `data/raw/` folder.
-3. Open and run `notebooks/01_schema_exploration.ipynb` to inspect the dataset and create the SQLite database.
-4. Run `notebooks/02_sql_business_analysis.ipynb` to perform the SQL analysis.
-5. Run `notebooks/03_visualizations_and_insights.ipynb` to generate and export the visualizations.
+3. Install the required packages using `pip install -r requirements.txt`.
+4. Open and run `notebooks/01_schema_exploration.ipynb` to inspect the dataset and create the SQLite database.
+5. Run `notebooks/02_sql_business_analysis.ipynb` to perform the SQL analysis.
+6. Run `notebooks/03_visualizations_and_insights.ipynb` to generate and export the visualizations.
 
 ## What I Learned
 
