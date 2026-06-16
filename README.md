@@ -305,6 +305,12 @@ Some limitations include:
 - Revenue analysis is based on product/order item values and does not include full profitability metrics such as margins, discounts, marketing costs, or operational costs.
 - This project did not perform heavy data cleaning or imputation. Instead, missing values, duplicates, partial months, and outliers were handled through careful exploration, filtering, and interpretation during analysis.
 
+## License
+
+This project is licensed under the MIT License.
+
+The original dataset is not included in this repository and remains subject to its original Kaggle/source terms.
+
 ## Final Summary
 
 This project was a major step from basic EDA toward more realistic business analysis. It required working with multiple tables, thinking carefully about row grain, writing SQL queries for business questions, and communicating insights through clear visualizations.
